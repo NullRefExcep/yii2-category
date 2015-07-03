@@ -35,10 +35,9 @@ class Installer extends ModuleInstaller
                 'title' => Schema::TYPE_STRING,
                 'parentId' => Schema::TYPE_INTEGER,
                 'type' => Schema::TYPE_INTEGER . ' NULL',
+                'status' => Schema::TYPE_INTEGER,
                 'image' => Schema::TYPE_STRING,
                 'description' => Schema::TYPE_TEXT,
-                'price' => Schema::TYPE_DECIMAL,
-                'status' => Schema::TYPE_INTEGER,
                 'createdAt' => Schema::TYPE_INTEGER . ' NOT NULL',
                 'updatedAt' => Schema::TYPE_INTEGER . ' NOT NULL',
             ], $tableOptions);

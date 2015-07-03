@@ -2,7 +2,7 @@
 
 namespace nullref\category\controllers;
 
-use nullref\product\Module;
+use nullref\category\Module;
 use yii\web\Controller;
 
 /**

@@ -20,7 +20,6 @@ class SearchCategory extends Category
         return [
             [['id', 'parentId', 'type', 'status', 'createdAt', 'updatedAt'], 'integer'],
             [['title', 'image', 'description'], 'safe'],
-            [['price'], 'number'],
         ];
     }
 
@@ -51,8 +50,6 @@ class SearchCategory extends Category
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -60,7 +57,6 @@ class SearchCategory extends Category
             'id' => $this->id,
             'parentId' => $this->parentId,
             'type' => $this->type,
-            'price' => $this->price,
             'status' => $this->status,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,

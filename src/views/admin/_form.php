@@ -12,11 +12,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->errorSummary($model) ?>
+
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'parentId')->textInput() ?>
-
-    <?= $form->field($model, 'type')->textInput() ?>
 
     <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
 

@@ -34,7 +34,7 @@ class AdminController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = $this->getManager()->createSearchModel();
+        $searchModel = static::getManager()->createSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -50,8 +50,9 @@ class AdminController extends BaseController
      */
     public function actionView($id)
     {
+        $model = static::getManager()->findOne($id);
         return $this->render('view', [
-            'model' => $this->getManager()->findOne($id),
+            'model' => $model,
         ]);
     }
 
@@ -62,7 +63,7 @@ class AdminController extends BaseController
      */
     public function actionCreate()
     {
-        $model = $this->getManager()->createModel();
+        $model = static::getManager()->createModel();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -81,7 +82,7 @@ class AdminController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $model = $this->getManager()->findOne($id);
+        $model = static::getManager()->findOne($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -100,7 +101,7 @@ class AdminController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->getManager()->findOne($id)->delete();
+        static::getManager()->findOne($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -114,7 +115,7 @@ class AdminController extends BaseController
      */
     protected function findModel($id)
     {
-        if (($model = $this->getManager()->findOne($id)) !== null) {
+        if (($model = static::getManager()->findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

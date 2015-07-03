@@ -20,12 +20,14 @@ class Module extends BaseModule implements IAdminModule
     public function init()
     {
         parent::init();
-        $this->setComponents(['categoryManager' => [
-            'class' => EntityManager::className(),
-            'modelClass' => $this->categoryModelClass,
-            'queryClass' => $this->categoryQueryClass,
-            'searchModelClass' => $this->categorySearchModelClass,
-        ]]);
+        if (null === $this->get('categoryManager')) {
+            $this->setComponents(['categoryManager' => [
+                'class' => EntityManager::className(),
+                'modelClass' => $this->categoryModelClass,
+                'queryClass' => $this->categoryQueryClass,
+                'searchModelClass' => $this->categorySearchModelClass,
+            ]]);
+        }
     }
 
 

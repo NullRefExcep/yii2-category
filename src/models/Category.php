@@ -3,8 +3,8 @@
 namespace nullref\category\models;
 
 use nullref\category\Module;
-use nullref\useful\DropDownTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -22,8 +22,6 @@ use yii\db\ActiveRecord;
  */
 class Category extends ActiveRecord implements ICategory
 {
-    use DropDownTrait;
-    
     public function getId()
     {
         return $this->id;
@@ -50,13 +48,25 @@ class Category extends ActiveRecord implements ICategory
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
             [['parentId', 'type', 'status'], 'integer'],
             [['description'], 'string'],
-            [['price'], 'number'],
-            [['createdAt', 'updatedAt'], 'required'],
             [['title', 'image'], 'string', 'max' => 255]
         ];
     }
@@ -73,7 +83,6 @@ class Category extends ActiveRecord implements ICategory
             'type' => Yii::t('category', 'Type'),
             'image' => Yii::t('category', 'Image'),
             'description' => Yii::t('category', 'Description'),
-            'price' => Yii::t('category', 'Price'),
             'status' => Yii::t('category', 'Status'),
             'createdAt' => Yii::t('category', 'Created At'),
             'updatedAt' => Yii::t('category', 'Updated At'),

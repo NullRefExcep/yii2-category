@@ -3,6 +3,7 @@
 namespace nullref\category\models;
 
 use nullref\category\Module;
+use nullref\useful\DropDownTrait;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -21,6 +22,8 @@ use yii\db\ActiveRecord;
  */
 class Category extends ActiveRecord implements ICategory
 {
+    use DropDownTrait;
+    
     public function getId()
     {
         return $this->id;

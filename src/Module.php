@@ -13,8 +13,6 @@ use yii\base\Module as BaseModule;
  */
 class Module extends BaseModule implements IAdminModule
 {
-    public $controllerNamespace = 'nullref\category\controllers';
-
     public $categoryModelClass = 'nullref\\category\\models\\Category';
     public $categoryQueryClass = 'nullref\\category\\models\\CategoryQuery';
     public $categorySearchModelClass = 'nullref\\category\\models\\SearchCategory';

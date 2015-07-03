@@ -1,0 +1,17 @@
+{
+    "name": "nullref/yii2-category",
+    "type": "yii2-extension",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": ">=2.0.4",
+        "nullref/yii2-useful": "dev-master",
+        "nullref/yii2-admin": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "nullref\\category\\": "src/"
+        }
+    }
+}

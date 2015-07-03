@@ -2,7 +2,7 @@
 
 namespace nullref\category;
 
-use nullref\category\models\ICategory;
+use nullref\core\components\EntityManager;
 use nullref\core\interfaces\IAdminModule;
 use Yii;
 use yii\base\Module as BaseModule;
@@ -17,6 +17,19 @@ class Module extends BaseModule implements IAdminModule
 
     public $categoryModelClass = 'nullref\\category\\models\\Category';
     public $categoryQueryClass = 'nullref\\category\\models\\CategoryQuery';
+    public $categorySearchModelClass = 'nullref\\category\\models\\SearchCategory';
+
+    public function init()
+    {
+        parent::init();
+        $this->setComponents(['categoryManager' => [
+            'class' => EntityManager::className(),
+            'modelClass' => $this->categoryModelClass,
+            'queryClass' => $this->categoryQueryClass,
+            'searchModelClass' => $this->categorySearchModelClass,
+        ]]);
+    }
+
 
     public static function getAdminMenu()
     {
@@ -25,14 +38,5 @@ class Module extends BaseModule implements IAdminModule
             'url' => ['/category/admin'],
             'icon' => 'archive',
         ];
-    }
-
-    /**
-     * @return ICategory
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function createCategoryModel()
-    {
-        return \Yii::createObject($this->categoryModelClass);
     }
 } 

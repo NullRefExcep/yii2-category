@@ -50,7 +50,7 @@ class Category extends ActiveRecord implements ICategory
     public function rules()
     {
         return [
-            [['parentId', 'type', 'status', 'createdAt', 'updatedAt'], 'integer'],
+            [['parentId', 'type', 'status'], 'integer'],
             [['description'], 'string'],
             [['price'], 'number'],
             [['createdAt', 'updatedAt'], 'required'],

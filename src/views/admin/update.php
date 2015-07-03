@@ -2,15 +2,17 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
 /* @var $model nullref\category\models\Category */
 
-$this->title = Yii::t('category', 'Create Category');
+$this->title = Yii::t('category', 'Update {modelClass}: ', [
+    'modelClass' => 'Category',
+]) . ' ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('category', 'Categories'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = Yii::t('category', 'Update');
 ?>
-<div class="category-create">
+<div class="category-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

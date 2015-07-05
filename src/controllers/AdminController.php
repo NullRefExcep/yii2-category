@@ -70,6 +70,7 @@ class AdminController extends BaseController
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'manager'=>$this->getManager(),
             ]);
         }
     }
@@ -89,6 +90,7 @@ class AdminController extends BaseController
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'manager'=>$this->getManager(),
             ]);
         }
     }
@@ -125,7 +127,7 @@ class AdminController extends BaseController
     /**
      * @return EntityManager
      */
-    protected function getManager()
+    public function getManager()
     {
         if (!isset($this->_manager)) {
             $this->_manager = \Yii::$app->getModule('category')->get('categoryManager');

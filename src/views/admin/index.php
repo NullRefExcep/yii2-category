@@ -9,6 +9,28 @@ use yii\helpers\Html;
 
 $this->title = Yii::t('category', 'Categories');
 $this->params['breadcrumbs'][] = $this->title;
+$columns = [
+    ['class' => 'yii\grid\SerialColumn'],
+
+    'title',
+    'createdAt:datetime',
+    'updatedAt:datetime',
+
+    ['class' => 'yii\grid\ActionColumn'],
+];
+/** @var \nullref\category\components\EntityManager $manager */
+$manager = $this->context->getManager();
+$additional = [];
+if ($manager->hasParent) {
+    $additional[] = 'parentId';
+}
+if ($manager->hasImage) {
+    $additional[] = 'image:image';
+}
+if ($manager->hasStatus) {
+    $additional[] = 'status:boolean';
+}
+array_splice($columns, 2, 0, $additional);
 ?>
 <div class="category-index">
 
@@ -27,16 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'title',
-            'image:image',
-            'createdAt:datetime',
-            'updatedAt:datetime',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
+        'columns' => $columns,
     ]); ?>
 
 </div>

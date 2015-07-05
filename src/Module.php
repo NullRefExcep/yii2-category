@@ -2,7 +2,7 @@
 
 namespace nullref\category;
 
-use nullref\core\components\EntityManager;
+use nullref\category\components\EntityManager;
 use nullref\core\interfaces\IAdminModule;
 use Yii;
 use yii\base\Module as BaseModule;

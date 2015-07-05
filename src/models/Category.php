@@ -19,6 +19,10 @@ use yii\db\ActiveRecord;
  * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
+ *
+ * @property Category $parent
+ * @property Category[] $parents
+ * @property Category[] $children
  */
 class Category extends ActiveRecord implements ICategory
 {
@@ -67,6 +71,7 @@ class Category extends ActiveRecord implements ICategory
         return [
             [['parentId', 'type', 'status'], 'integer'],
             [['description'], 'string'],
+            [['title'], 'required'],
             [['title', 'image'], 'string', 'max' => 255]
         ];
     }
@@ -79,7 +84,7 @@ class Category extends ActiveRecord implements ICategory
         return [
             'id' => Yii::t('category', 'ID'),
             'title' => Yii::t('category', 'Title'),
-            'parentId' => Yii::t('category', 'Parent ID'),
+            'parentId' => Yii::t('category', 'Parent'),
             'type' => Yii::t('category', 'Type'),
             'image' => Yii::t('category', 'Image'),
             'description' => Yii::t('category', 'Description'),
@@ -99,5 +104,37 @@ class Category extends ActiveRecord implements ICategory
         $module = Yii::$app->getModule('category');
         $className = $module->categoryQueryClass;
         return new $className(get_called_class());
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getChildren()
+    {
+        return $this->hasMany(self::className(), ['parentId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(self::className(), ['id' => 'parentId']);
+    }
+
+    /**
+     * @return Category[]
+     */
+    public function getParents()
+    {
+        $result = [];
+        if ($this->parent !== null) {
+            $result[] = $this->parent;
+            $parents = $this->parent->parents;
+            if (!empty($parents)) {
+                $result[] = $this->parents;
+            }
+        }
+        return $result;
     }
 }

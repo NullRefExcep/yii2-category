@@ -9,6 +9,25 @@ use yii\widgets\DetailView;
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('category', 'Categories'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$attributes = [
+    'title',
+    'description:ntext',
+    'createdAt:datetime',
+    'updatedAt:datetime',
+];
+/** @var \nullref\category\components\EntityManager $manager */
+$manager = $this->context->getManager();
+$additional = [];
+if ($manager->hasParent) {
+    $additional[] = 'parentId';
+}
+if ($manager->hasImage) {
+    $additional[] = 'image:image';
+}
+if ($manager->hasStatus) {
+    $additional[] = 'status:boolean';
+}
+array_splice($attributes, 1, 0, $additional);
 ?>
 <div class="category-view">
 
@@ -19,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p>
+        <?= Html::a(Yii::t('category', 'List'), ['index',], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('category', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('category', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -31,15 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= DetailView::widget([
         'model' => $model,
-        'attributes' => [
-            'id',
-            'title',
-            'image:image',
-            'description:ntext',
-            'status:boolean',
-            'createdAt:datetime',
-            'updatedAt:datetime',
-        ],
+        'attributes' => $attributes,
     ]) ?>
 
 </div>

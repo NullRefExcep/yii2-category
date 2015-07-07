@@ -4,6 +4,7 @@ namespace nullref\category\behaviors;
 
 use nullref\category\models\Category;
 use nullref\core\behaviors\HasOneRelation;
+use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -20,12 +21,12 @@ class HasCategory extends HasOneRelation
 
     public $entityModuleId = 'category';
     public $entityManagerName = 'categoryManager';
-    public $keyName = 'categoryId';
+    public $attributeName = 'categoryId';
     public $fieldName = 'categoryId';
 
-    public function getKeyName()
+    public function getAttributeName()
     {
-        return $this->keyName;
+        return $this->attributeName;
     }
 
     public function getFieldName()
@@ -33,4 +34,8 @@ class HasCategory extends HasOneRelation
         return $this->fieldName;
     }
 
+    public function getAttributeLabel()
+    {
+        return Yii::t('catalog', 'Category');
+    }
 }

@@ -13,21 +13,21 @@ use yii\base\Module as BaseModule;
  */
 class Module extends BaseModule implements IAdminModule
 {
-    public $categoryModelClass = 'nullref\\category\\models\\Category';
-    public $categoryQueryClass = 'nullref\\category\\models\\CategoryQuery';
-    public $categorySearchModelClass = 'nullref\\category\\models\\SearchCategory';
 
     public function init()
     {
         parent::init();
-        if (null === $this->get('categoryManager')) {
-            $this->setComponents(['categoryManager' => [
-                'class' => EntityManager::className(),
-                'modelClass' => $this->categoryModelClass,
-                'queryClass' => $this->categoryQueryClass,
-                'searchModelClass' => $this->categorySearchModelClass,
-            ]]);
+
+        $config = $this->getComponents();
+        if (isset($config['categoryManager'])) {
+            $config = $config['categoryManager'];
+        } else {
+            $config = [];
         }
+        $config = EntityManager::getConfig('nullref\\category\\models\\', 'Category', $config);
+        $this->setComponents([
+            'categoryManager' => $config
+        ]);
     }
 
 

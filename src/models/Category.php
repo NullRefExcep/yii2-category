@@ -2,7 +2,7 @@
 
 namespace nullref\category\models;
 
-use nullref\category\Module;
+use nullref\core\components\EntityManager;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -100,9 +100,9 @@ class Category extends ActiveRecord implements ICategory
      */
     public static function find()
     {
-        /** @var Module $module */
-        $module = Yii::$app->getModule('category');
-        $className = $module->categoryQueryClass;
+        /** @var EntityManager $manager */
+        $manager = Yii::$app->getModule('category')->get('categoryManager');
+        $className = $manager->getQueryClass();
         return new $className(get_called_class());
     }
 

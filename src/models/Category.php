@@ -3,9 +3,9 @@
 namespace nullref\category\models;
 
 use nullref\core\components\EntityManager;
+use nullref\core\models\Model as BaseModel;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%category}}".
@@ -24,7 +24,7 @@ use yii\db\ActiveRecord;
  * @property Category[] $parents
  * @property Category[] $children
  */
-class Category extends ActiveRecord implements ICategory
+class Category extends BaseModel implements ICategory
 {
     public function getId()
     {
@@ -68,12 +68,11 @@ class Category extends ActiveRecord implements ICategory
      */
     public function rules()
     {
-        return [
-            [['parentId', 'type', 'status'], 'integer'],
+        return array_merge([[['parentId', 'type', 'status'], 'integer'],
             [['description'], 'string'],
             [['title'], 'required'],
-            [['title', 'image'], 'string', 'max' => 255]
-        ];
+            [['title', 'image'], 'string', 'max' => 255],
+        ], parent::rules());
     }
 
     /**
@@ -81,7 +80,7 @@ class Category extends ActiveRecord implements ICategory
      */
     public function attributeLabels()
     {
-        return [
+        return array_merge([
             'id' => Yii::t('category', 'ID'),
             'title' => Yii::t('category', 'Title'),
             'parentId' => Yii::t('category', 'Parent'),
@@ -91,7 +90,7 @@ class Category extends ActiveRecord implements ICategory
             'status' => Yii::t('category', 'Status'),
             'createdAt' => Yii::t('category', 'Created At'),
             'updatedAt' => Yii::t('category', 'Updated At'),
-        ];
+        ], parent::attributeLabels());
     }
 
     /**

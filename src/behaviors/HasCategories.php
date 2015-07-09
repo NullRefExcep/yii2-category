@@ -25,28 +25,8 @@ class HasCategories extends HasManyRelation
     public $toFieldName = 'entityId';
     public $tableName = '{{%entity_has_category}}';
 
-    public function getAttributeName()
-    {
-        return $this->attributeName;
-    }
-
-    public function getFromFieldName()
-    {
-        return $this->fromFieldName;
-    }
-
-    public function getToFieldName()
-    {
-        return $this->toFieldName;
-    }
-
     public function getAttributeLabel()
     {
         return Yii::t('catalog', 'Category');
-    }
-
-    public function getTableName()
-    {
-        return $this->tableName;
     }
 }

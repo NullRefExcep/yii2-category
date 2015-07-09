@@ -18,24 +18,19 @@ use yii\db\ActiveRecord;
  */
 class HasCategory extends HasOneRelation
 {
-
     public $entityModuleId = 'category';
+    public $relationName = 'category';
     public $entityManagerName = 'categoryManager';
     public $attributeName = 'categoryId';
     public $fieldName = 'categoryId';
 
-    public function getAttributeName()
-    {
-        return $this->attributeName;
-    }
-
-    public function getFieldName()
-    {
-        return $this->fieldName;
-    }
-
     public function getAttributeLabel()
     {
         return Yii::t('catalog', 'Category');
+    }
+
+    public function getCategory()
+    {
+        return $this->getRelation();
     }
 }

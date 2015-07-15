@@ -4,6 +4,7 @@ namespace nullref\category\behaviors;
 
 use nullref\category\models\Category;
 use nullref\core\behaviors\HasOneRelation;
+use nullref\core\behaviors\ManyHasOneRelation;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -16,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property ActiveRecord $owner
  * @property Category $category
  */
-class HasCategory extends HasOneRelation
+class HasCategory extends ManyHasOneRelation
 {
     public $entityModuleId = 'category';
     public $relationName = 'category';

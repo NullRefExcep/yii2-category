@@ -33,11 +33,15 @@ class Installer extends ModuleInstaller
             $this->createTable($this->tableName, [
                 'id' => Schema::TYPE_PK,
                 'title' => Schema::TYPE_STRING,
+                'slug' => Schema::TYPE_STRING,
                 'parentId' => Schema::TYPE_INTEGER,
                 'type' => Schema::TYPE_INTEGER . ' NULL',
                 'status' => Schema::TYPE_INTEGER,
                 'image' => Schema::TYPE_STRING,
                 'description' => Schema::TYPE_TEXT,
+                'data' => Schema::TYPE_TEXT,
+                'deleted' => Schema::TYPE_BOOLEAN,
+                'order' => Schema::TYPE_INTEGER,
                 'createdAt' => Schema::TYPE_INTEGER . ' NOT NULL',
                 'updatedAt' => Schema::TYPE_INTEGER . ' NOT NULL',
             ], $tableOptions);

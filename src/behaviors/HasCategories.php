@@ -4,6 +4,7 @@ namespace nullref\category\behaviors;
 
 use nullref\category\models\Category;
 use nullref\core\behaviors\HasManyRelation;
+use nullref\core\behaviors\ManyHasManyRelation;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -16,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property ActiveRecord $owner
  * @property Category $category
  */
-class HasCategories extends HasManyRelation
+class HasCategories extends ManyHasManyRelation
 {
     public $entityModuleId = 'category';
     public $entityManagerName = 'categoryManager';

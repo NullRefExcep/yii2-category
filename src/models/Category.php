@@ -4,7 +4,9 @@ namespace nullref\category\models;
 
 use nullref\core\components\EntityManager;
 use nullref\core\models\Model as BaseModel;
+use nullref\useful\JsonBehavior;
 use Yii;
+use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -19,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
+ * @property string|array $data
  *
  * @property Category $parent
  * @property Category[] $parents
@@ -55,10 +58,19 @@ class Category extends BaseModel implements ICategory
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
-            [
+            'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'createdAtAttribute' => 'createdAt',
                 'updatedAtAttribute' => 'updatedAt',
+            ],
+            'slug' => [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'title',
+                'slugAttribute' => 'slug',
+            ],
+            'json' => [
+                'class' => JsonBehavior::className(),
+                'fields' => ['data'],
             ],
         ]);
     }
@@ -69,7 +81,8 @@ class Category extends BaseModel implements ICategory
     public function rules()
     {
         return array_merge([[['parentId', 'type', 'status'], 'integer'],
-            [['description'], 'string'],
+            [['description', 'slug'], 'string'],
+            [['data'], 'safe'],
             [['title'], 'required'],
             [['title', 'image'], 'string', 'max' => 255],
         ], parent::rules());
@@ -90,6 +103,7 @@ class Category extends BaseModel implements ICategory
             'status' => Yii::t('category', 'Status'),
             'createdAt' => Yii::t('category', 'Created At'),
             'updatedAt' => Yii::t('category', 'Updated At'),
+            'slug' => Yii::t('category', 'Slug'),
         ], parent::attributeLabels());
     }
 

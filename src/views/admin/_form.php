@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -17,6 +16,8 @@ use yii\widgets\ActiveForm;
     <?= $form->errorSummary($model) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
     <?php if ($manager->hasParent): ?>
         <?= $form->field($model, 'parentId')->

@@ -6,6 +6,7 @@ use nullref\admin\components\AdminController as BaseController;
 use nullref\category\models\Category;
 use nullref\core\components\EntityManager;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
@@ -23,6 +24,17 @@ class AdminController extends BaseController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'access' => [
+                'user' => 'admin',
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => [],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

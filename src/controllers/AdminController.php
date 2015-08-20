@@ -115,7 +115,7 @@ class AdminController extends BaseController
      */
     public function actionDelete($id)
     {
-        static::getManager()->findOne($id)->delete();
+        static::getManager()->delete(static::getManager()->findOne($id));
 
         return $this->redirect(['index']);
     }

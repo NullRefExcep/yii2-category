@@ -67,6 +67,7 @@ class Category extends BaseModel implements ICategory
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'title',
                 'slugAttribute' => 'slug',
+                'immutable' => true,
             ],
             'json' => [
                 'class' => JsonBehavior::className(),

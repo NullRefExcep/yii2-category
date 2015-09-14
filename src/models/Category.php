@@ -22,6 +22,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $createdAt
  * @property integer $updatedAt
  * @property string|array $data
+ * @property integer $order
  *
  * @property Category $parent
  * @property Category[] $parents
@@ -81,9 +82,10 @@ class Category extends BaseModel implements ICategory
      */
     public function rules()
     {
-        return array_merge([[['parentId', 'type', 'status'], 'integer'],
+        return array_merge([[['parentId', 'type', 'status', 'order'], 'integer'],
             [['description', 'slug'], 'string'],
             [['data'], 'safe'],
+            [['order'], 'default', 'value' => 0],
             [['title'], 'required'],
             [['title', 'image'], 'string', 'max' => 255],
         ], parent::rules());
@@ -105,6 +107,7 @@ class Category extends BaseModel implements ICategory
             'createdAt' => Yii::t('category', 'Created At'),
             'updatedAt' => Yii::t('category', 'Updated At'),
             'slug' => Yii::t('category', 'Slug'),
+            'order' => Yii::t('category', 'Order'),
         ], parent::attributeLabels());
     }
 

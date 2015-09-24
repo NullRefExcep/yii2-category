@@ -22,3 +22,17 @@ or add
 ```
 
 to the require section of your `composer.json` file.
+
+Then You have run console command for install this module:
+
+```
+php yii module/install category
+```
+
+and module will be added to your application config (`@app/config/installed_modules.php`)
+
+Using with yii2-admin module
+----------------------------
+
+You can use this module with (Yii2 Admin)[https://github.com/NullRefExcep/yii2-admin] module.
+ 

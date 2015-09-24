@@ -149,7 +149,7 @@ class Category extends BaseModel implements ICategory
             $result[] = $this->parent;
             $parents = $this->parent->parents;
             if (!empty($parents)) {
-                $result[] = $this->parents;
+                $result[] = $parents;
             }
         }
         return $result;

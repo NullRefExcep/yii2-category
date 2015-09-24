@@ -34,5 +34,5 @@ and module will be added to your application config (`@app/config/installed_modu
 Using with yii2-admin module
 ----------------------------
 
-You can use this module with (Yii2 Admin)[https://github.com/NullRefExcep/yii2-admin] module.
+You can use this module with [Yii2 Admin](https://github.com/NullRefExcep/yii2-admin) module.
  

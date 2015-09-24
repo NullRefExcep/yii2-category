@@ -36,3 +36,15 @@ Using with yii2-admin module
 
 You can use this module with [Yii2 Admin](https://github.com/NullRefExcep/yii2-admin) module.
  
+Example with EntityManager 
+----------------------------
+
+Module contain `EntityManager` component with alias `categoryManager` which provide simple access to data:
+
+```php
+/** @var Module $module */
+$module = Yii::$app->getModule('category');
+/** @var EntityManager $manager */
+$manager = $module->get('categoryManager');
+$model = $manager->findOne(['id' => 5]);
+```

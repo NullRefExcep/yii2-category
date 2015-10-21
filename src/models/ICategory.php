@@ -1,6 +1,7 @@
 <?php
 
 namespace nullref\category\models;
+
 use yii\db\ActiveRecordInterface;
 
 /**

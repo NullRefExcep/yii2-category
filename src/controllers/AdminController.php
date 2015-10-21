@@ -82,7 +82,7 @@ class AdminController extends BaseController
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'manager'=>$this->getManager(),
+                'manager' => $this->getManager(),
             ]);
         }
     }
@@ -102,7 +102,7 @@ class AdminController extends BaseController
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'manager'=>$this->getManager(),
+                'manager' => $this->getManager(),
             ]);
         }
     }

@@ -1,9 +1,7 @@
 <?php
 
-use nullref\admin\models\Admin;
-use yii\db\Schema;
 use yii\db\Migration;
-use yii\rbac\BaseManager;
+use yii\db\Schema;
 
 class m150920_102200_create_category_table extends Migration
 {

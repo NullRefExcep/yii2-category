@@ -99,9 +99,9 @@ class CategorySearch extends ParentCategorySearch
                         $behavior->getTableName() . '.' . $behavior->getToFieldName() . ' = ' . $this->tableName() . '.`id`');
                     $query->andWhere([$behavior->getTableName() . '.' . $behavior->getFromFieldName() => $ids]);
                     /**
-                    foreach($ids as $id){
-                    $query->andWhere([$behavior->getTableName() . '.' . $behavior->getFromFieldName() => $id]);
-                    }
+                     * foreach($ids as $id){
+                     * $query->andWhere([$behavior->getTableName() . '.' . $behavior->getFromFieldName() => $id]);
+                     * }
                      */
                 }
             }

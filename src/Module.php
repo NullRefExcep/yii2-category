@@ -13,6 +13,7 @@ use Yii;
  */
 class Module extends BaseModule implements IAdminModule
 {
+    public $categoryModel = 'nullref\category\models\Category';
 
     public function init()
     {

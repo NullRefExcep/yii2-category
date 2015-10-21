@@ -9,7 +9,6 @@ namespace nullref\category;
 
 
 use nullref\core\components\ModuleInstaller;
-use yii\db\Schema;
 
 class Installer extends ModuleInstaller
 {

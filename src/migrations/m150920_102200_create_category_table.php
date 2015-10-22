@@ -26,10 +26,10 @@ class m150920_102200_create_category_table extends Migration
                 'image' => Schema::TYPE_STRING,
                 'description' => Schema::TYPE_TEXT,
                 'data' => Schema::TYPE_TEXT,
-                'deleted' => Schema::TYPE_BOOLEAN,
                 'order' => Schema::TYPE_INTEGER,
                 'createdAt' => Schema::TYPE_INTEGER . ' NOT NULL',
                 'updatedAt' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'deletedAt' => Schema::TYPE_INTEGER,
             ], $tableOptions);
         }
     }

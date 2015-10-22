@@ -26,7 +26,7 @@ class Bootstrap implements BootstrapInterface
         $definition = $class;
 
         /** @var Module $module */
-        if (($module !== null) && (class_exists($module->categoryModel))) {
+        if (($module !== null) && (!empty($module->categoryModel))) {
             $definition = $module->categoryModel;
         }
 

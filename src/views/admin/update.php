@@ -4,7 +4,6 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model nullref\category\models\Category */
-/** @var $manager \nullref\core\components\EntityManager */
 
 $this->title = Yii::t('category', 'Update {modelClass}: ', [
         'modelClass' => 'Category',
@@ -23,7 +22,6 @@ $this->params['breadcrumbs'][] = Yii::t('category', 'Update');
 
     <?= $this->render('_form', [
         'model' => $model,
-        'manager' => $manager,
     ]) ?>
 
 </div>

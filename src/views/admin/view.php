@@ -15,18 +15,9 @@ $attributes = [
     'createdAt:datetime',
     'updatedAt:datetime',
 ];
-/** @var \nullref\category\components\EntityManager $manager */
-$manager = $this->context->getManager();
-$additional = [];
-if ($manager->hasParent) {
     $additional[] = 'parentId';
-}
-if ($manager->hasImage) {
     $additional[] = 'image:image';
-}
-if ($manager->hasStatus) {
     $additional[] = 'status:boolean';
-}
 array_splice($attributes, 1, 0, $additional);
 ?>
 <div class="category-view">

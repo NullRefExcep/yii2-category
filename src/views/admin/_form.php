@@ -2,11 +2,11 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use nullref\category\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $model nullref\category\models\Category */
 /* @var $form yii\widgets\ActiveForm */
-/** @var $manager \nullref\category\components\EntityManager */
 ?>
 
 <div class="category-form">
@@ -19,20 +19,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
-    <?php if ($manager->hasParent): ?>
-        <?= $form->field($model, 'parentId')->
-        dropDownList($manager->getMap('id', 'title', ['not in', 'id', isset($model->id) ? $model->id : 0]), ['prompt' => Yii::t('app', 'N/A')]) ?>
-    <?php endif ?>
+    <?= $form->field($model, 'parentId')->dropDownList(Category::getDropDownArray('id', 'title', ['not in', 'id', isset($model->id) ? $model->id : 0]), ['prompt' => Yii::t('app', 'N/A')]) ?>
 
-    <?php if ($manager->hasImage): ?>
-        <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
-    <?php endif ?>
+    <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?php if ($manager->hasStatus): ?>
-        <?= $form->field($model, 'status')->textInput() ?>
-    <?php endif ?>
+    <?= $form->field($model, 'status')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('category', 'Create') : Yii::t('category', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

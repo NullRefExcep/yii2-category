@@ -18,18 +18,13 @@ $columns = [
 
     ['class' => 'yii\grid\ActionColumn'],
 ];
-/** @var \nullref\category\components\EntityManager $manager */
-$manager = $this->context->getManager();
+
 $additional = [];
-if ($manager->hasParent) {
     $additional[] = 'parentId';
-}
-if ($manager->hasImage) {
-    $additional[] = 'image:image';
-}
-if ($manager->hasStatus) {
-    $additional[] = 'status:boolean';
-}
+
+$additional[] = 'image:image';
+
+$additional[] = 'status:boolean';
 array_splice($columns, 2, 0, $additional);
 ?>
 <div class="category-index">

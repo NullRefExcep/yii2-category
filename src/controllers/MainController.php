@@ -2,7 +2,7 @@
 
 namespace nullref\category\controllers;
 
-use nullref\category\Module;
+use nullref\category\models\Category;
 use yii\web\Controller;
 
 /**
@@ -17,11 +17,9 @@ class MainController extends Controller
         return $this->render('index');
     }
 
-    public function actionCreate()
+    public function actionView($id)
     {
-        /** @var Module $module */
-        $module = \Yii::$app->getModule('category');
-        $model = $module->createModel();
+        $model = Category::findOne($id);
         return $this->render('create', ['model' => $model]);
     }
 } 

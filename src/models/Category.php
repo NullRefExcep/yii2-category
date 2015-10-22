@@ -2,8 +2,10 @@
 
 namespace nullref\category\models;
 
+use nullref\core\behaviors\SoftDelete;
 use nullref\core\components\EntityManager;
 use nullref\core\models\Model as BaseModel;
+use nullref\useful\DropDownTrait;
 use nullref\useful\JsonBehavior;
 use Yii;
 use yii\behaviors\SluggableBehavior;
@@ -30,6 +32,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Category extends BaseModel implements ICategory
 {
+    use DropDownTrait;
+
     public function getId()
     {
         return $this->id;
@@ -69,6 +73,9 @@ class Category extends BaseModel implements ICategory
                 'attribute' => 'title',
                 'slugAttribute' => 'slug',
                 'immutable' => true,
+            ],
+            'soft-delete' => [
+                'class' => SoftDelete::className(),
             ],
             'json' => [
                 'class' => JsonBehavior::className(),
@@ -117,10 +124,7 @@ class Category extends BaseModel implements ICategory
      */
     public static function find()
     {
-        /** @var EntityManager $manager */
-        $manager = Yii::$app->getModule('category')->get('categoryManager');
-        $className = $manager->getQueryClass();
-        return new $className(get_called_class());
+        return parent::find()->where(['deletedAt' => null]);
     }
 
     /**

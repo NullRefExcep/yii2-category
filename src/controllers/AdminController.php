@@ -4,6 +4,7 @@ namespace nullref\category\controllers;
 
 use nullref\admin\components\AdminController as BaseController;
 use nullref\category\models\Category;
+use nullref\category\models\CategorySearch;
 use nullref\core\components\EntityManager;
 use Yii;
 use yii\filters\AccessControl;
@@ -15,8 +16,6 @@ use yii\web\NotFoundHttpException;
  */
 class AdminController extends BaseController
 {
-    protected $_manager;
-
     public function behaviors()
     {
         return [
@@ -46,7 +45,7 @@ class AdminController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = static::getManager()->createSearchModel();
+        $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -62,7 +61,7 @@ class AdminController extends BaseController
      */
     public function actionView($id)
     {
-        $model = static::getManager()->findOne($id);
+        $model = $this->findModel($id);
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -75,14 +74,13 @@ class AdminController extends BaseController
      */
     public function actionCreate()
     {
-        $model = static::getManager()->createModel();
+        $model = Yii::createObject(Category::className());
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'manager' => $this->getManager(),
             ]);
         }
     }
@@ -95,14 +93,13 @@ class AdminController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $model = static::getManager()->findOne($id);
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'manager' => $this->getManager(),
             ]);
         }
     }
@@ -115,7 +112,7 @@ class AdminController extends BaseController
      */
     public function actionDelete($id)
     {
-        static::getManager()->delete(static::getManager()->findOne($id));
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -129,21 +126,10 @@ class AdminController extends BaseController
      */
     protected function findModel($id)
     {
-        if (($model = static::getManager()->findOne($id)) !== null) {
+        if (($model = Category::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /**
-     * @return EntityManager
-     */
-    public function getManager()
-    {
-        if (!isset($this->_manager)) {
-            $this->_manager = \Yii::$app->getModule('category')->get('categoryManager');
-        }
-        return $this->_manager;
     }
 }

@@ -106,7 +106,6 @@ class CategorySearch extends ParentCategorySearch
                 }
             }
         }
-        $query->andWhere(['deleted' => null]);
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'description', $this->description]);

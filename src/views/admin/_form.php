@@ -1,8 +1,8 @@
 <?php
 
+use nullref\category\models\Category;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use nullref\category\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $model nullref\category\models\Category */

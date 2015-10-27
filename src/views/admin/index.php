@@ -20,7 +20,7 @@ $columns = [
 ];
 
 $additional = [];
-    $additional[] = 'parentId';
+$additional[] = 'parentId';
 
 $additional[] = 'image:image';
 

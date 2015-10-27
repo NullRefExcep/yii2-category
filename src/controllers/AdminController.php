@@ -5,7 +5,6 @@ namespace nullref\category\controllers;
 use nullref\admin\components\AdminController as BaseController;
 use nullref\category\models\Category;
 use nullref\category\models\CategorySearch;
-use nullref\core\components\EntityManager;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;

@@ -3,7 +3,6 @@
 namespace nullref\category\models;
 
 use nullref\core\behaviors\SoftDelete;
-use nullref\core\components\EntityManager;
 use nullref\core\models\Model as BaseModel;
 use nullref\useful\DropDownTrait;
 use nullref\useful\JsonBehavior;

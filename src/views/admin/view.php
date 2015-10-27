@@ -15,9 +15,9 @@ $attributes = [
     'createdAt:datetime',
     'updatedAt:datetime',
 ];
-    $additional[] = 'parentId';
-    $additional[] = 'image:image';
-    $additional[] = 'status:boolean';
+$additional[] = 'parentId';
+$additional[] = 'image:image';
+$additional[] = 'status:boolean';
 array_splice($attributes, 1, 0, $additional);
 ?>
 <div class="category-view">

@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'parentId')->dropDownList(Category::getDropDownArray('id', 'title', ['not in', 'id', isset($model->id) ? $model->id : 0]), ['prompt' => Yii::t('app', 'N/A')]) ?>
+    <?= $form->field($model, 'parentId')->dropDownList(Category::getDropDownArray('id', 'title', ['not in', 'id', isset($model->id) ? $model->id : 0]), ['prompt' => Yii::t('category', 'N/A')]) ?>
 
     <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
 

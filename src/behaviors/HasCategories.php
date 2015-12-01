@@ -28,6 +28,6 @@ class HasCategories extends ManyHasManyRelation
 
     public function getAttributeLabel()
     {
-        return Yii::t('catalog', 'Category');
+        return Yii::t('category', 'Category');
     }
 }

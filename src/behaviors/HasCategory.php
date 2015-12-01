@@ -27,7 +27,7 @@ class HasCategory extends ManyHasOneRelation
 
     public function getAttributeLabel()
     {
-        return Yii::t('catalog', 'Category');
+        return Yii::t('category', 'Category');
     }
 
     public function getCategory()

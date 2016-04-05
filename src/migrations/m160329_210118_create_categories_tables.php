@@ -41,33 +41,6 @@ class m160329_210118_create_categories_tables extends Migration
             $this->addForeignKey('category_fk_parents', '{{%category_closure}}', 'child_id', '{{%category}}', 'id', 'CASCADE');
             $this->addForeignKey('category_fk_parent', '{{%category_closure}}', 'parent_id', '{{%category}}', 'id', 'CASCADE');
         }
-
-        for ($i = 1; $i <= 3; $i++) {
-            $model = new Category();
-            $model->title = 'Category ' . $i;
-            $model->save();
-            $parent_id = $model->id;
-            for ($j = 1; $j <= 2; $j++) {
-                $model = new Category();
-                $model->title = 'Category ' . $i . '.' . $j;
-                $model->parent_id = $parent_id;
-                $model->save();
-                $parent_id_j = $model->id;
-                for ($k = 1; $k <= 2; $k++) {
-                    $model = new Category();
-                    $model->title = 'Category ' . $i . '.' . $j . '.' . $k;
-                    $model->parent_id = $parent_id_j;
-                    $model->save();
-                    $parent_id_k = $model->id;
-                    for ($z = 1; $z <= 2; $z++) {
-                        $model = new Category();
-                        $model->title = 'Category ' . $i . '.' . $j . '.' . $k . '.' . $z;
-                        $model->parent_id = $parent_id_k;
-                        $model->save();
-                    }
-                }
-            }
-        }
     }
 
     /**

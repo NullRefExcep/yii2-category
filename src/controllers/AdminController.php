@@ -2,18 +2,18 @@
 
 namespace nullref\category\controllers;
 
-use nullref\admin\components\AdminController as BaseController;
-use nullref\category\models\Category;
-use nullref\category\models\CategorySearch;
 use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
+use nullref\category\models\Category;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use nullref\core\interfaces\IAdminController;
+use yii\web\Response;
 
 /**
- * AdminController implements the CRUD actions for Category model.
+ * CategoryController implements the CRUD actions for Category model.
  */
-class AdminController extends BaseController
+class AdminController extends Controller implements IAdminController
 {
     public function behaviors()
     {
@@ -21,67 +21,44 @@ class AdminController extends BaseController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-            'access' => [
-                'user' => 'admin',
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => [],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all Category models.
-     * @return mixed
+     * @param int $id
+     * @return string
      */
-    public function actionIndex()
+    public function actionIndex($id = 0)
     {
-        $searchModel = new CategorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $categories = Category::getTree();
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Category model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        $model = $this->findModel($id);
-        return $this->render('view', [
-            'model' => $model,
+            'categories' => $categories,
+            'id' => $id,
         ]);
     }
 
     /**
      * Creates a new Category model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @param bool $parent_id
+     * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($parent_id = Category::ROOT_PARENT)
     {
+        /** @var Category $model */
         $model = Yii::createObject(Category::className());
 
+        $model->parent_id = $parent_id;
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->redirect(['index', 'id' => $model->parent ? $model->parent->id : 0]);
         }
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -95,25 +72,18 @@ class AdminController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return [
+                    'success' => !$model->hasErrors(),
+                    'errors' => $model->getFirstErrors(),
+                ];
+            }
+            return $this->redirect(['index', 'id' => $model->parent ? $model->parent->id : 0]);
         }
-    }
-
-    /**
-     * Deletes an existing Category model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -130,5 +100,21 @@ class AdminController extends BaseController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     * Deletes an existing Category model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        /** @var Category $model */
+        $model = $this->findModel($id);
+
+        $model->delete();
+
+        return $this->redirect(['index', 'id' => $model->parent ? $model->parent->id : 0]);
     }
 }

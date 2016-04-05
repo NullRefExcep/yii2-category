@@ -2,50 +2,232 @@
 
 namespace nullref\category\models;
 
-use nullref\core\behaviors\SoftDelete;
-use nullref\core\models\Model as BaseModel;
-use nullref\useful\DropDownTrait;
-use nullref\useful\JsonBehavior;
 use Yii;
-use yii\behaviors\SluggableBehavior;
-use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%category}}".
  *
  * @property integer $id
  * @property string $title
- * @property integer $parentId
- * @property integer $type
- * @property string $image
- * @property string $description
- * @property integer $status
- * @property integer $createdAt
- * @property integer $updatedAt
- * @property string|array $data
- * @property integer $order
+ * @property integer $parent_id
+ * @property float $sort_order
  *
- * @property Category $parent
+ * @property integer $depth
+ *
+ * @property Category|null $parent
  * @property Category[] $parents
+ * @property Category[] $descendants
  * @property Category[] $children
+ *
  */
-class Category extends BaseModel implements ICategory
+class Category extends ActiveRecord
 {
-    use DropDownTrait;
+    /**
+     * Parent of root nodes
+     */
+    const ROOT_PARENT = 0;
 
-    public function getId()
+    /**
+     * Using when move node
+     * @var integer
+     */
+    public $beforeId;
+
+    /**
+     * Returns all of categories as tree
+     *
+     * @param array $options
+     * @return mixed
+     */
+    public static function getTree(array $options = [])
     {
-        return $this->id;
+        $depth = ArrayHelper::remove($options, 'depth', -1);
+        /** @var \Closure $filter */
+        $filter = ArrayHelper::remove($options, 'filter', function () {
+            return true;
+        });
+
+        $list = self::find()->asArray()->all();
+
+        $list = ArrayHelper::remove($options, 'list', $list);
+
+        $getChildren = function ($id, $depth) use ($list, &$getChildren, $filter) {
+            $result = [];
+            foreach ($list as $item) {
+                if ((int)$item['parent_id'] === (int)$id) {
+                    $r = [
+                        'title' => $item['title'],
+                        'sort_order' => $item['sort_order'],
+                        'id' => $item['id'],
+                    ];
+                    $c = $depth ? $getChildren($item['id'], $depth - 1) : null;
+                    if (!empty($c)) {
+                        $r['children'] = $c;
+                    }
+                    if ($filter($r)) {
+                        $result[] = $r;
+                    }
+                }
+            }
+
+            usort($result, function ($a, $b) {
+                return $a['sort_order'] > $b['sort_order'];
+            });
+
+            return $result;
+
+        };
+
+        return $getChildren(0, $depth);
     }
 
-    public function getTitle()
+    /**
+     * @inheritdoc
+     * @return CategoryQuery the active query used by this AR class.
+     */
+    public static function find()
     {
-        return $this->title;
+        $definitions = Yii::$container->getDefinitions();
+        if ((isset($definitions[__CLASS__]) && isset($definitions[__CLASS__]['class']))) {
+            return Yii::createObject(CategoryQuery::className(), [$definitions[__CLASS__]['class']]);
+        }
+        return Yii::createObject(CategoryQuery::className(), [get_called_class()]);
     }
 
-    public function getType()
+    /**
+     * @inheritdoc
+     */
+    public function rules()
     {
-        return $this->type;
+        return [
+            [['title'], 'required'],
+            [['parent_id'], 'default', 'value' => self::ROOT_PARENT],
+            [['parent_id'], 'integer'],
+            [['beforeId'], 'safe'],
+            [['title'], 'string', 'max' => 255],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'parent_id'])
+            ->alias('parents');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getChildren()
+    {
+        return $this->hasMany(Category::className(), ['parent_id' => 'id'])
+            ->alias('children');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('category', 'ID'),
+            'title' => Yii::t('category', 'Title'),
+            'parent_id' => Yii::t('category', 'Parent ID'),
+        ];
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $this->createParentsRecords();
+        } else {
+            if (isset($changedAttributes['parent_id']) && ((int)$changedAttributes['parent_id'] !== (int)$this->parent_id)) {
+                $oldParent = Category::findOne(['id' => $changedAttributes['parent_id']]);
+                if ($oldParent) {
+                    self::getDb()->createCommand()
+                        ->delete(CategoryClosure::tableName(), ['child_id' => $this->id,])
+                        ->execute();
+
+                    $allChildrenIds = $this->getDescendants()->column();
+                    self::getDb()->createCommand()
+                        ->delete(CategoryClosure::tableName(), ['child_id' => $allChildrenIds])
+                        ->execute();
+                }
+
+                $this->createParentsRecordsRecursive();
+            }
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     *
+     */
+    protected function createParentsRecords()
+    {
+        if (($parent = $this->parent) !== null) {
+            $parents = $parent->parents;
+            $parents[] = $parent;
+            foreach ($parents as $level => $item) {
+                $model = new CategoryClosure();
+                $model->child_id = $this->id;
+                $model->parent_id = $item->id;
+                $model->level = $level + 1;
+                $model->save(false);
+            }
+        }
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getDescendants()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'child_id'])
+            ->viaTable(CategoryClosure::tableName(), ['parent_id' => 'id'])
+            ->alias('descendants');
+    }
+
+    /**
+     *
+     */
+    protected function createParentsRecordsRecursive()
+    {
+        $this->createParentsRecords();
+        foreach ($this->children as $child) {
+            $child->createParentsRecordsRecursive();
+        }
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParents()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'parent_id'])
+            ->viaTable(CategoryClosure::tableName(), ['child_id' => 'id'])
+            ->alias('parents');
+    }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        self::getDb()->createCommand()
+            ->update(Category::tableName(), ['parent_id' => $this->parent_id], ['parent_id' => $this->id])
+            ->execute();
+        parent::afterDelete();
     }
 
     /**
@@ -57,104 +239,92 @@ class Category extends BaseModel implements ICategory
     }
 
     /**
-     * @inheritdoc
+     * Move child nodes to parent
+     * @return bool
+     * @throws \yii\db\Exception
      */
-    public function behaviors()
+    public function beforeDelete()
     {
-        return array_merge(parent::behaviors(), [
-            'timestamp' => [
-                'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt',
-            ],
-            'slug' => [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'title',
-                'slugAttribute' => 'slug',
-                'immutable' => true,
-            ],
-            'soft-delete' => [
-                'class' => SoftDelete::className(),
-            ],
-            'json' => [
-                'class' => JsonBehavior::className(),
-                'fields' => ['data'],
-            ],
-        ]);
+        $depth = $this->getDepth();
+        $allChildrenIds = $this->getDescendants()->select('id')->column();
+
+        self::getDb()->createCommand()
+            ->update(CategoryClosure::tableName(), [
+                'level' => new Expression('level-1'),
+            ], ['and', ['>', 'level', $depth], ['child_id' => $allChildrenIds]])->execute();
+        return parent::beforeDelete();
     }
 
     /**
-     * @inheritdoc
+     * @return bool|string
      */
-    public function rules()
+    public function getDepth()
     {
-        return array_merge([[['parentId', 'type', 'status', 'order'], 'integer'],
-            [['description', 'slug'], 'string'],
-            [['data'], 'safe'],
-            [['order'], 'default', 'value' => 0],
-            [['title'], 'required'],
-            [['title', 'image'], 'string', 'max' => 255],
-        ], parent::rules());
+        return CategoryClosure::find()
+            ->where(['child_id' => $this->id])
+            ->orderBy(['level' => SORT_DESC])
+            ->limit(1)
+            ->max('level');
     }
 
     /**
-     * @inheritdoc
+     * @param bool $insert
+     * @return bool
      */
-    public function attributeLabels()
+    public function beforeSave($insert)
     {
-        return array_merge([
-            'id' => Yii::t('category', 'ID'),
-            'title' => Yii::t('category', 'Title'),
-            'parentId' => Yii::t('category', 'Parent'),
-            'type' => Yii::t('category', 'Type'),
-            'image' => Yii::t('category', 'Image'),
-            'description' => Yii::t('category', 'Description'),
-            'status' => Yii::t('category', 'Status'),
-            'createdAt' => Yii::t('category', 'Created At'),
-            'updatedAt' => Yii::t('category', 'Updated At'),
-            'slug' => Yii::t('category', 'Slug'),
-            'order' => Yii::t('category', 'Order'),
-        ], parent::attributeLabels());
-    }
-
-    /**
-     * @inheritdoc
-     * @return CategoryQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return parent::find()->where(['deletedAt' => null]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getChildren()
-    {
-        return $this->hasMany(self::className(), ['parentId' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getParent()
-    {
-        return $this->hasOne(self::className(), ['id' => 'parentId']);
-    }
-
-    /**
-     * @return Category[]
-     */
-    public function getParents()
-    {
-        $result = [];
-        if ($this->parent !== null) {
-            $result[] = $this->parent;
-            $parents = $this->parent->parents;
-            if (!empty($parents)) {
-                $result[] = $parents;
+        if ($insert) {
+            $sort_order = $this->getSiblings()->max('sort_order');
+            $this->sort_order = $sort_order + 1;
+        } else {
+            if ($this->beforeId !== null) {
+                $this->changeOrder((int)$this->beforeId);
             }
         }
-        return $result;
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getSiblings()
+    {
+        $query = self::find()->siblings($this);
+        $query->multiple = true;
+        return $query;
+    }
+
+    /**
+     * @param $before
+     */
+    protected function changeOrder($before)
+    {
+        if ($before) {
+            /** @var Category $prev */
+            $prevSortOrder = Category::find()
+                ->andWhere(['id' => $before])
+                ->limit(1)
+                ->min('sort_order');
+
+            $nextSortOrder = Category::find()
+                ->andWhere(['>', 'sort_order', (float)$prevSortOrder])
+                ->andWhere(['parent_id' => $this->parent_id])
+                ->limit(1)
+                ->min('sort_order');
+
+            if ($nextSortOrder > $prevSortOrder) {
+                $newOrder = ($prevSortOrder + $nextSortOrder) / 2;
+            } else {
+                $newOrder = $prevSortOrder + 1;
+            }
+        } else {
+            $prevSortOrder = Category::find()
+                ->andWhere(['parent_id' => $this->parent_id])
+                ->limit(1)
+                ->min('sort_order');
+            $newOrder = $prevSortOrder / 2;
+        }
+
+        $this->sort_order = $newOrder;
     }
 }

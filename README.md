@@ -2,7 +2,7 @@ Yii2 Category
 ===============
 [![Latest Stable Version](https://poser.pugx.org/nullref/yii2-category/v/stable)](https://packagist.org/packages/nullref/yii2-category) [![Total Downloads](https://poser.pugx.org/nullref/yii2-category/downloads)](https://packagist.org/packages/nullref/yii2-category) [![Latest Unstable Version](https://poser.pugx.org/nullref/yii2-category/v/unstable)](https://packagist.org/packages/nullref/yii2-category) [![License](https://poser.pugx.org/nullref/yii2-category/license)](https://packagist.org/packages/nullref/yii2-category)
 
-Module for categories
+Module for categories (WIP)
 
 Installation
 ------------
@@ -35,16 +35,17 @@ Using with yii2-admin module
 ----------------------------
 
 You can use this module with [Yii2 Admin](https://github.com/NullRefExcep/yii2-admin) module.
- 
-Example with EntityManager 
-----------------------------
 
-Module contain `EntityManager` component with alias `categoryManager` which provide simple access to data:
+Models overriding
+-----------------
 
 ```php
-/** @var Module $module */
-$module = Yii::$app->getModule('category');
-/** @var EntityManager $manager */
-$manager = $module->get('categoryManager');
-$model = $manager->findOne(['id' => 5]);
+
+    'category' => [
+        'class' => 'nullref\category\Module',
+        'classMap' => [
+            'Category' => 'app\models\Category',
+            'CategoryQuery' => 'app\models\CategoryQuery',
+        ],
+    ],
 ```

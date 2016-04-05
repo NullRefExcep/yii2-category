@@ -1,50 +1,45 @@
 <?php
 
-use yii\grid\GridView;
 use yii\helpers\Html;
+use nullref\category\assets\CategoryTreeAsset;
+use yii\web\View;
 
-/* @var $this yii\web\View */
-/* @var $searchModel nullref\category\models\SearchCategory */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/**
+ * @var $this View
+ * @var $id integer
+ * @var $categories \nullref\category\models\Category []
+ */
+
+$this->registerJs("var selectedCategoryId = $id;", View::POS_BEGIN);
+CategoryTreeAsset::register($this);
+
 
 $this->title = Yii::t('category', 'Categories');
 $this->params['breadcrumbs'][] = $this->title;
-$columns = [
-    ['class' => 'yii\grid\SerialColumn'],
-
-    'title',
-    'createdAt:datetime',
-    'updatedAt:datetime',
-
-    ['class' => 'yii\grid\ActionColumn'],
-];
-
-$additional = [];
-$additional[] = 'parentId';
-
-$additional[] = 'image:image';
-
-$additional[] = 'status:boolean';
-array_splice($columns, 2, 0, $additional);
 ?>
+
 <div class="category-index">
 
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header"><?= Html::encode($this->title) ?></h1>
+            <h1 class="page-header">
+                <?= Html::encode($this->title) ?>
+            </h1>
         </div>
     </div>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <p>
-        <?= Html::a(Yii::t('category', 'Create Category'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('category', 'Add Category'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $columns,
-    ]); ?>
-
+    <div class="tree" id="treeView">
+        <?php if (count($categories)): ?>
+            <ol class="category-list">
+                <?php foreach ($categories as $category): ?>
+                    <?= $this->render('_item', [
+                        'category' => $category
+                    ]) ?>
+                <?php endforeach; ?>
+            </ol>
+        <?php endif ?>
+    </div>
 </div>

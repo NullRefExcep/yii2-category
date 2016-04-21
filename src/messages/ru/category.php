@@ -22,9 +22,10 @@ return [
     'Categories' => 'Категории',
     'Create' => 'Создать',
     'Create Category' => 'Создать категорию',
+    'Update Category: ' => 'Обновить категорию: ',
     'ID' => '',
     'Parent ID' => 'ID Родителя',
     'Title' => 'Заголовок',
     'Update' => 'Обновить',
-    'Update {modelClass}: ' => 'Обновить {modelClass}:',
+    'Update {modelClass}: ' => 'Обновить {modelClass}: ',
 ];

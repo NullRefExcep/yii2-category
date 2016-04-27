@@ -47,7 +47,7 @@ class Category extends ActiveRecord
     {
         $depth = ArrayHelper::remove($options, 'depth', -1);
         /** @var \Closure $filter */
-        $filter = ArrayHelper::remove($options, 'filter', function () {
+        $filter = ArrayHelper::remove($options, 'filter', function ($item) {
             return true;
         });
 

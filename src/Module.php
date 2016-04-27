@@ -36,7 +36,7 @@ class Module extends BaseModule implements IAdminModule, BootstrapInterface
         return [
             'label' => Yii::t('category', 'Categories'),
             'icon' => 'tags',
-            'url' => ['/category/admin'],
+            'url' => ['/category/admin/default'],
         ];
     }
 

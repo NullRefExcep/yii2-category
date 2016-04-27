@@ -1,6 +1,6 @@
 <?php
 
-namespace nullref\category\controllers;
+namespace nullref\category\controllers\admin;
 
 use Yii;
 use nullref\category\models\Category;
@@ -13,7 +13,7 @@ use yii\web\Response;
 /**
  * CategoryController implements the CRUD actions for Category model.
  */
-class AdminController extends Controller implements IAdminController
+class DefaultController extends Controller implements IAdminController
 {
     public function behaviors()
     {

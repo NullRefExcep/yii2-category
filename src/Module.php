@@ -19,6 +19,7 @@ class Module extends BaseModule implements IAdminModule, BootstrapInterface
      * @var array
      */
     public $classMap = [];
+
     /**
      * @var array
      */

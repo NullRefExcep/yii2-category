@@ -4,6 +4,7 @@ jQuery(function () {
     });
 
     var treeView = jQuery('#treeView');
+    var formName = treeView.data('formName');
 
     treeView.find('> ol').nestedSortable({
         items: '.category-list-item',
@@ -16,15 +17,15 @@ jQuery(function () {
             var url = obj.item.data('updateUrl');
             var parent = obj.item.parents('li');
             var before = obj.item.prev();
+            var data = {};
+            data[formName] = {
+                beforeId: before.length ? before.data('id') : 0,
+                parent_id: parent.length ? parent.data('id') : 0
+            };
             jQuery.ajax({
                 url: url,
                 method: 'post',
-                data: {
-                    Category: {
-                        beforeId: before.length ? before.data('id') : 0,
-                        parent_id: parent.length ? parent.data('id') : 0
-                    }
-                },
+                data: data,
                 success: function () {
                     treeView.css({opacity: 1});
                 },

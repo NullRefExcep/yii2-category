@@ -15,6 +15,14 @@ use yii\web\Response;
  */
 class DefaultController extends Controller implements IAdminController
 {
+    /**
+     * @var string
+     */
+    public $modelClass;
+
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         return [
@@ -28,15 +36,31 @@ class DefaultController extends Controller implements IAdminController
     }
 
     /**
+     *
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->modelClass === null) {
+            $this->modelClass = Category::className();
+        }
+    }
+
+
+    /**
      * @param int $id
      * @return string
      */
     public function actionIndex($id = 0)
     {
-        $categories = Category::getTree();
+        $categories = call_user_func([$this->modelClass, 'getTree']);
+        /** @var Category $model */
+        $model = Yii::createObject($this->modelClass);
+        $formName = $model->formName();
         return $this->render('index', [
             'categories' => $categories,
             'id' => $id,
+            'formName' => $formName,
         ]);
     }
 
@@ -49,7 +73,7 @@ class DefaultController extends Controller implements IAdminController
     public function actionCreate($parent_id = Category::ROOT_PARENT)
     {
         /** @var Category $model */
-        $model = Yii::createObject(Category::className());
+        $model = Yii::createObject($this->modelClass);
 
         $model->parent_id = $parent_id;
 
@@ -81,6 +105,13 @@ class DefaultController extends Controller implements IAdminController
             }
             return $this->redirect(['index', 'id' => $model->parent ? $model->parent->id : 0]);
         }
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'model' => $model,
+            ];
+        }
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -95,7 +126,7 @@ class DefaultController extends Controller implements IAdminController
      */
     protected function findModel($id)
     {
-        if (($model = Category::findOne($id)) !== null) {
+        if (($model = call_user_func([$this->modelClass, 'findOne'], [$id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

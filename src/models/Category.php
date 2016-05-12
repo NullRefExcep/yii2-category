@@ -27,6 +27,11 @@ use yii\helpers\ArrayHelper;
 class Category extends ActiveRecord
 {
     /**
+     * @var string
+     */
+    public $closureClass = 'nullref\category\models\CategoryClosure';
+
+    /**
      * Parent of root nodes
      */
     const ROOT_PARENT = 0;
@@ -117,7 +122,7 @@ class Category extends ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(Category::className(), ['id' => 'parent_id'])
+        return $this->hasOne(self::className(), ['id' => 'parent_id'])
             ->alias('parents');
     }
 
@@ -126,7 +131,7 @@ class Category extends ActiveRecord
      */
     public function getChildren()
     {
-        return $this->hasMany(Category::className(), ['parent_id' => 'id'])
+        return $this->hasMany(self::className(), ['parent_id' => 'id'])
             ->alias('children');
     }
 
@@ -152,15 +157,15 @@ class Category extends ActiveRecord
             $this->createParentsRecords();
         } else {
             if (isset($changedAttributes['parent_id']) && ((int)$changedAttributes['parent_id'] !== (int)$this->parent_id)) {
-                $oldParent = Category::findOne(['id' => $changedAttributes['parent_id']]);
+                $oldParent = self::findOne(['id' => $changedAttributes['parent_id']]);
                 if ($oldParent) {
                     self::getDb()->createCommand()
-                        ->delete(CategoryClosure::tableName(), ['child_id' => $this->id,])
+                        ->delete($this->getClosureTableName(), ['child_id' => $this->id,])
                         ->execute();
 
                     $allChildrenIds = $this->getDescendants()->column();
                     self::getDb()->createCommand()
-                        ->delete(CategoryClosure::tableName(), ['child_id' => $allChildrenIds])
+                        ->delete($this->getClosureTableName(), ['child_id' => $allChildrenIds])
                         ->execute();
                 }
 
@@ -179,7 +184,7 @@ class Category extends ActiveRecord
             $parents = $parent->parents;
             $parents[] = $parent;
             foreach ($parents as $level => $item) {
-                $model = new CategoryClosure();
+                $model = Yii::createObject($this->closureClass);
                 $model->child_id = $this->id;
                 $model->parent_id = $item->id;
                 $model->level = $level + 1;
@@ -193,8 +198,8 @@ class Category extends ActiveRecord
      */
     public function getDescendants()
     {
-        return $this->hasMany(Category::className(), ['id' => 'child_id'])
-            ->viaTable(CategoryClosure::tableName(), ['parent_id' => 'id'])
+        return $this->hasMany(self::className(), ['id' => 'child_id'])
+            ->viaTable($this->getClosureTableName(), ['parent_id' => 'id'])
             ->alias('descendants');
     }
 
@@ -214,8 +219,8 @@ class Category extends ActiveRecord
      */
     public function getParents()
     {
-        return $this->hasMany(Category::className(), ['id' => 'parent_id'])
-            ->viaTable(CategoryClosure::tableName(), ['child_id' => 'id'])
+        return $this->hasMany(self::className(), ['id' => 'parent_id'])
+            ->viaTable($this->getClosureTableName(), ['child_id' => 'id'])
             ->alias('parents');
     }
 
@@ -249,18 +254,20 @@ class Category extends ActiveRecord
         $allChildrenIds = $this->getDescendants()->select('id')->column();
 
         self::getDb()->createCommand()
-            ->update(CategoryClosure::tableName(), [
+            ->update($this->getClosureTableName(), [
                 'level' => new Expression('level-1'),
             ], ['and', ['>', 'level', $depth], ['child_id' => $allChildrenIds]])->execute();
         return parent::beforeDelete();
     }
 
     /**
-     * @return bool|string
+     * @return mixed
      */
     public function getDepth()
     {
-        return CategoryClosure::find()
+        /** @var ActiveQuery $query */
+        $query = call_user_func([$this->closureClass, 'find']);
+        return $query
             ->where(['child_id' => $this->id])
             ->orderBy(['level' => SORT_DESC])
             ->limit(1)
@@ -301,12 +308,12 @@ class Category extends ActiveRecord
     {
         if ($before) {
             /** @var Category $prev */
-            $prevSortOrder = Category::find()
+            $prevSortOrder = self::find()
                 ->andWhere(['id' => $before])
                 ->limit(1)
                 ->min('sort_order');
 
-            $nextSortOrder = Category::find()
+            $nextSortOrder = self::find()
                 ->andWhere(['>', 'sort_order', (float)$prevSortOrder])
                 ->andWhere(['parent_id' => $this->parent_id])
                 ->limit(1)
@@ -318,7 +325,7 @@ class Category extends ActiveRecord
                 $newOrder = $prevSortOrder + 1;
             }
         } else {
-            $prevSortOrder = Category::find()
+            $prevSortOrder = self::find()
                 ->andWhere(['parent_id' => $this->parent_id])
                 ->limit(1)
                 ->min('sort_order');
@@ -326,5 +333,14 @@ class Category extends ActiveRecord
         }
 
         $this->sort_order = $newOrder;
+    }
+
+    /**
+     * Return closure table name
+     * @return string
+     */
+    protected function getClosureTableName()
+    {
+        return call_user_func([$this->closureClass, 'tableName']);
     }
 }

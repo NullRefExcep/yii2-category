@@ -7,6 +7,7 @@ use yii\web\View;
 /**
  * @var $this View
  * @var $id integer
+ * @var $formName string
  * @var $categories \nullref\category\models\Category []
  */
 
@@ -31,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('category', 'Add Category'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <div class="tree" id="treeView">
+    <div class="tree" id="treeView" data-form-name="<?= $formName ?>">
         <?php if (count($categories)): ?>
             <ol class="category-list">
                 <?php foreach ($categories as $category): ?>

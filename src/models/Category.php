@@ -230,7 +230,7 @@ class Category extends ActiveRecord
     public function afterDelete()
     {
         self::getDb()->createCommand()
-            ->update(Category::tableName(), ['parent_id' => $this->parent_id], ['parent_id' => $this->id])
+            ->update(static::tableName(), ['parent_id' => $this->parent_id], ['parent_id' => $this->id])
             ->execute();
         parent::afterDelete();
     }

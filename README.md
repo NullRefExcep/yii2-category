@@ -4,6 +4,8 @@ Yii2 Category
 
 Module for categories (WIP)
 
+![](https://raw.githubusercontent.com/NullRefExcep/yii2-category/master/docs/assets/screen-demo.gif)
+
 Installation
 ------------
 

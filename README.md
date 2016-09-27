@@ -51,3 +51,11 @@ Models overriding
         ],
     ],
 ```
+
+Also you have to add module to bootstrap list of application:
+
+```php
+...
+'bootstrap' => ['category',...],
+...
+```

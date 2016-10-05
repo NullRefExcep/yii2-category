@@ -56,7 +56,8 @@ class Category extends ActiveRecord
             return true;
         });
 
-        $list = self::find()->asArray()->all();
+        /** @var Category[] $list */
+        $list = self::find()->all();
 
         $list = ArrayHelper::remove($options, 'list', $list);
 

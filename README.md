@@ -28,7 +28,7 @@ to the require section of your `composer.json` file.
 Then You have run console command for install this module:
 
 ```
-php yii module/install category
+php yii module/install nullref/yii2-category
 ```
 
 and module will be added to your application config (`@app/config/installed_modules.php`)
@@ -36,7 +36,9 @@ and module will be added to your application config (`@app/config/installed_modu
 Using with yii2-admin module
 ----------------------------
 
-You can use this module with [Yii2 Admin](https://github.com/NullRefExcep/yii2-admin) module.
+You can use this module with modules:
+- [Yii2 Admin](https://github.com/NullRefExcep/yii2-admin).
+- [Yii2 Full Admin](https://github.com/NullRefExcep/yii2-full-admin).
 
 Models overriding
 -----------------

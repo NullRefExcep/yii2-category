@@ -2,7 +2,6 @@
 
 namespace nullref\category\migrations;
 
-use nullref\category\models\Category;
 use nullref\core\traits\MigrationTrait;
 use yii\db\Migration;
 

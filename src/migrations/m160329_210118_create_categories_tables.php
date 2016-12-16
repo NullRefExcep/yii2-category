@@ -1,7 +1,5 @@
 <?php
 
-namespace nullref\category\migrations;
-
 use nullref\core\traits\MigrationTrait;
 use yii\db\Migration;
 

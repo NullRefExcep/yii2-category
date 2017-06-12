@@ -33,6 +33,8 @@ php yii module/install nullref/yii2-category
 
 and module will be added to your application config (`@app/config/installed_modules.php`)
 
+![](https://raw.githubusercontent.com/NullRefExcep/yii2-category/master/docs/assets/core-install.gif)
+
 Using with admin module
 ----------------------------
 

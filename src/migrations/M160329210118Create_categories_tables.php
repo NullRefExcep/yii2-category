@@ -18,23 +18,19 @@ class M160329210118Create_categories_tables extends Migration
     public function safeUp()
     {
         if (!$this->tableExist('{{%category}}')) {
-            $tableOptions = null;
-            if ($this->db->driverName === 'mysql') {
-                $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
-            }
 
             $this->createTable('{{%category}}', [
                 'id' => $this->primaryKey(),
                 'title' => $this->string(),
                 'parent_id' => $this->integer()->notNull(),
                 'sort_order' => $this->float()->defaultValue(1),
-            ], $tableOptions);
+            ], $this->getTableOptions());
 
             $this->createTable('{{%category_closure}}', [
                 'child_id' => $this->integer()->notNull(),
                 'parent_id' => $this->integer()->notNull(),
                 'level' => $this->integer()->notNull()->defaultValue(0),
-            ], $tableOptions);
+            ], $this->getTableOptions());
 
             $this->createIndex('category_fk_parent', '{{%category}}', 'parent_id');
 

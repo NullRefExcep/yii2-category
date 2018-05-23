@@ -344,4 +344,53 @@ class Category extends ActiveRecord
     {
         return call_user_func([$this->closureClass, 'tableName']);
     }
+
+    /**
+     * Return hierarchy structure of categories
+     * for output in widget
+     *
+     * @param array $checked
+     * @param bool $multiple
+     * @return mixed
+     */
+    public static function getNestedList(array $checked = [], $multiple = true)
+    {
+        $hasChecked = count($checked) > 0;
+        $list = static::find()->orderBy('sort_order desc')->asArray()->all();
+        foreach ($checked as $key => $id) {
+            for ($i = 0, $length = count($list); $i < $length; $i++) {
+                if ($list[$i]['id'] === $id) {
+                    $list[$i]['selected'] = true;
+                    $list[$i]['active'] = true;
+                    break;
+                }
+            }
+        }
+        $getChildren = function ($id) use ($list, &$getChildren, $hasChecked, $multiple) {
+            $result = [];
+            for ($i = 0, $length = count($list); $i < $length; $i++) {
+                $item = $list[$i];
+                if ((int)$item['parent_id'] === (int)$id) {
+                    $r = [
+                        'title' => $item['title'],
+                        'key' => $item['id'],
+                    ];
+                    if ($multiple) {
+                        $r['selected'] = isset($item['selected']);
+                    } else {
+                        $r['active'] = isset($item['active']);
+                    }
+                    $c = $getChildren($item['id']);
+                    if (!empty($c)) {
+                        $r['folder'] = true;
+                        $r['children'] = $c;
+                        $r['expanded'] = $hasChecked;
+                    }
+                    $result[] = $r;
+                }
+            }
+            return $result;
+        };
+        return $getChildren(0);
+    }
 }

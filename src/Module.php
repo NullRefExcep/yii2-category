@@ -3,6 +3,7 @@
 namespace nullref\category;
 
 use nullref\core\interfaces\IAdminModule;
+use nullref\core\interfaces\IHasMigrateNamespace;
 use Yii;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
@@ -11,9 +12,11 @@ use yii\i18n\PhpMessageSource;
 use yii\web\Application as WebApplication;
 
 /**
- * shop module definition class
+ * Class Module
+ *
+ * @package nullref\category
  */
-class Module extends BaseModule implements IAdminModule, BootstrapInterface
+class Module extends BaseModule implements IAdminModule, BootstrapInterface, IHasMigrateNamespace
 {
     /**
      * @var array
@@ -51,19 +54,29 @@ class Module extends BaseModule implements IAdminModule, BootstrapInterface
         $classMap = array_merge($this->_classMap, $this->classMap);
         foreach (['Category', 'CategoryQuery'] as $item) {
             $className = __NAMESPACE__ . '\models\\' . $item;
-            $postClass = $className::className();
             $definition = $classMap[$item];
-            Yii::$container->set($postClass, $definition);
+            Yii::$container->set($className, $definition);
         }
 
         if ($app instanceof WebApplication) {
             if (!isset($app->i18n->translations['category*'])) {
                 $app->i18n->translations['category*'] = [
-                    'class' => PhpMessageSource::className(),
+                    'class' => PhpMessageSource::class,
                     'basePath' => '@nullref/category/messages',
                 ];
             }
         }
 
+    }
+
+    /**
+     * Return path to folder with migration with namespaces
+     *
+     * @param $defaults
+     * @return array
+     */
+    public function getMigrationNamespaces($defaults)
+    {
+        return ['nullref\category\migration_ns'];
     }
 }

@@ -27,7 +27,7 @@ class DefaultController extends Controller implements IAdminController
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -42,7 +42,7 @@ class DefaultController extends Controller implements IAdminController
     {
         parent::init();
         if ($this->modelClass === null) {
-            $this->modelClass = Category::className();
+            $this->modelClass = Category::class;
         }
     }
 

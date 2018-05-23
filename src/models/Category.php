@@ -99,9 +99,9 @@ class Category extends ActiveRecord
     {
         $definitions = Yii::$container->getDefinitions();
         if ((isset($definitions[__CLASS__]) && isset($definitions[__CLASS__]['class']))) {
-            return Yii::createObject(CategoryQuery::className(), [$definitions[__CLASS__]['class']]);
+            return Yii::createObject(CategoryQuery::class, [$definitions[__CLASS__]['class']]);
         }
-        return Yii::createObject(CategoryQuery::className(), [get_called_class()]);
+        return Yii::createObject(CategoryQuery::class, [get_called_class()]);
     }
 
     /**
@@ -123,7 +123,7 @@ class Category extends ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(self::className(), ['id' => 'parent_id'])
+        return $this->hasOne(self::class, ['id' => 'parent_id'])
             ->alias('parents');
     }
 
@@ -132,7 +132,7 @@ class Category extends ActiveRecord
      */
     public function getChildren()
     {
-        return $this->hasMany(self::className(), ['parent_id' => 'id'])
+        return $this->hasMany(self::class, ['parent_id' => 'id'])
             ->alias('children');
     }
 
@@ -199,7 +199,7 @@ class Category extends ActiveRecord
      */
     public function getDescendants()
     {
-        return $this->hasMany(self::className(), ['id' => 'child_id'])
+        return $this->hasMany(self::class, ['id' => 'child_id'])
             ->viaTable($this->getClosureTableName(), ['parent_id' => 'id'])
             ->alias('descendants');
     }
@@ -220,7 +220,7 @@ class Category extends ActiveRecord
      */
     public function getParents()
     {
-        return $this->hasMany(self::className(), ['id' => 'parent_id'])
+        return $this->hasMany(self::class, ['id' => 'parent_id'])
             ->viaTable($this->getClosureTableName(), ['child_id' => 'id'])
             ->alias('parents');
     }

@@ -29,6 +29,6 @@ class CategoryClosure extends ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'child_id']);
+        return $this->hasOne(Category::class, ['id' => 'child_id']);
     }
 }

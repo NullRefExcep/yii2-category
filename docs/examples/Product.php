@@ -6,7 +6,7 @@
 
 
 use nullref\category\models\Category;
-use voskobovich\behaviors\ManyToManyBehavior;
+use voskobovich\linker\LinkerBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -46,7 +46,7 @@ class Product extends ActiveRecord
     {
         return [
             'manyToMany' => [
-                'class' => ManyToManyBehavior::class,
+                'class' => LinkerBehavior::class,
                 'relations' => [
                     'categoriesList' => 'categories'
                 ],

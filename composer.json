@@ -11,7 +11,8 @@
         "nullref/yii2-core": "dev-master"
     },
     "suggest": {
-      "wbraganca/yii2-fancytree-widget": "Fancytree widget for form input"
+      "wbraganca/yii2-fancytree-widget": "Fancytree widget for form input",
+      "voskobovich/yii2-linker-behavior": "Need to link categories with another models"
     },
     "autoload": {
         "psr-4": {

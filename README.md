@@ -33,7 +33,18 @@ php yii module/install nullref/yii2-category
 
 and module will be added to your application config (`@app/config/installed_modules.php`)
 
+Pay attention that if you don't use our [application template](https://github.com/NullRefExcep/yii2-boilerplate) 
+it needs to change config files structure to have ability run commands that show above.
+
+Please check this [documentation section](https://github.com/NullRefExcep/yii2-core#config-structure)
+
 ![](https://raw.githubusercontent.com/NullRefExcep/yii2-category/master/docs/assets/core-install.gif)
+
+
+Module integration
+------------------
+
+If you need additional information about integration current module with your project, please check [example folder](https://github.com/NullRefExcep/yii2-category/tree/master/docs/examples)
 
 Using with admin module
 ----------------------------
@@ -63,3 +74,4 @@ Also you have to add module to bootstrap list of application:
 'bootstrap' => ['category',...],
 ...
 ```
+

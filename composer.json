@@ -10,6 +10,9 @@
         "nullref/yii2-useful": "dev-master",
         "nullref/yii2-core": "dev-master"
     },
+    "suggest": {
+      "wbraganca/yii2-fancytree-widget": "Fancytree widget for form input"
+    },
     "autoload": {
         "psr-4": {
             "nullref\\category\\": "src/"

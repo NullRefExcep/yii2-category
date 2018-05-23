@@ -1,6 +1,6 @@
 <?php
 
-namespace nullref\category\migrations;
+namespace nullref\category\migrations_ns;
 
 use nullref\core\traits\MigrationTrait;
 use yii\db\Migration;

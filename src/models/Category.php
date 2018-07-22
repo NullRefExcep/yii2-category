@@ -18,10 +18,10 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $depth
  *
- * @property Category|null $parent
- * @property Category[] $parents
- * @property Category[] $descendants
- * @property Category[] $children
+ * @property self|null $parent
+ * @property self[] $parents
+ * @property self[] $descendants
+ * @property self[] $children
  *
  */
 class Category extends ActiveRecord

@@ -7,8 +7,8 @@
         "php": ">=5.5.0",
         "yiisoft/yii2": ">=2.0.4",
         "yiisoft/yii2-jui": "^2.0",
-        "nullref/yii2-useful": "dev-master",
-        "nullref/yii2-core": "dev-master"
+        "nullref/yii2-useful": "^0.0.4",
+        "nullref/yii2-core": "^0.0.3"
     },
     "suggest": {
       "wbraganca/yii2-fancytree-widget": "Fancytree widget for form input",
